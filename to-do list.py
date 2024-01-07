@@ -70,7 +70,7 @@ def open_file(filename):
     with open(file_path, 'r') as file:
         content = file.read()
         entry_name.delete(0, "end")
-        entry_name.insert(0, os.path.splitext(filename)[0]) 
+        entry_name.insert(0, os.path.splitext(filename)[0])
         textbox.delete("1.0", "end")
         textbox.insert("1.0", content)
 
@@ -92,7 +92,7 @@ def save():
 
     global frame_supp
     global label_supp
-    global label_status 
+    global label_status
     global button_status
 
     if os.path.exists(file_path):
@@ -105,10 +105,10 @@ def save():
         button_status = customtkinter.CTkButton(frame_supp, text='Cancel',fg_color='#495057', font=('Roboto', 13), width=60, height=20,command=cancel_supp)
         button_status.place(x=85, y=35)
     else:
-        frame_supp.destroy()
+        '''frame_supp.destroy()
         label_supp.destroy()
         label_status.destroy()
-        button_status.destroy()
+        button_status.destroy()'''
 
 
         with open(file_path, 'w') as file:
@@ -116,21 +116,21 @@ def save():
             print(f"File '{file_name}.txt' saved successfully.")
 
 def save_supp():
+
+
     file_name = entry_name.get()
     text_content = textbox.get("1.0", "end-1c")
     folder_path = "file"
 
     file_path = os.path.join(folder_path, f'{file_name}.txt')
 
+    with open(file_path, 'w') as file:
+        file.write(text_content)
+        print(f"File '{file_name}.txt' saved successfully.")
     frame_supp.destroy()
     label_supp.destroy()
     label_status.destroy()
     button_status.destroy()
-
-    with open(file_path, 'w') as file:
-        file.write(text_content)
-        print(f"File '{file_name}.txt' saved successfully.")
-
 def cancel_supp():
     frame_supp.destroy()
     label_supp.destroy()
