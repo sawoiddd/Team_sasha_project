@@ -1,10 +1,11 @@
 import customtkinter
+import os
 
 root = customtkinter.CTk()
 root.title('Нотатки')
 root.geometry('1080x720')
 root.resizable(width=False, height=False)
-customtkinter.set_appearance_mode("dark")
+
 
 
 def create():
@@ -20,7 +21,7 @@ def create():
 
     button_save = customtkinter.CTkButton(frame2, text="Save", command=save_and_update_list, width=95, font=('Roboto', 15))
     button_save.place(x=645, y=15)
-    button_close = customtkinter.CTkButton(frame2, text="Close", command=close, width=95,fg_color='#242424',
+    button_close = customtkinter.CTkButton(frame2, text="Delete", command=close, width=95,fg_color='#242424',
                                           font=('Roboto', 15))
     button_close.place(x=540, y=15)
 
@@ -40,11 +41,11 @@ def update_file_list():
 
     file_folder = "file"
     for filename in os.listdir(file_folder):
-        frame_saves = customtkinter.CTkFrame(scrollable_frame, width=200, height=50, bg_color='#495057')
+        frame_saves = customtkinter.CTkFrame(scrollable_frame, width=200, height=50)
         frame_saves.pack(pady=5)
-        label_file = customtkinter.CTkLabel(frame_saves, text=filename,width=150, font=('Roboto', 12), fg_color='#495057' )
+        label_file = customtkinter.CTkLabel(frame_saves, text=filename,width=150, font=('Roboto', 12))
         label_file.pack(side="left")
-        button_open = customtkinter.CTkButton(frame_saves, text="Open", command=lambda name=filename: open_file(name), width=50, font=('Roboto', 12),bg_color='#495057')
+        button_open = customtkinter.CTkButton(frame_saves, text="Open", command=lambda name=filename: open_file(name), width=50, font=('Roboto', 12))
         button_open.pack(side="right")
 
 def open_file(filename):
@@ -64,7 +65,7 @@ def open_file(filename):
     button_save = customtkinter.CTkButton(frame2, text="Save", command=save_and_update_list, width=95,
                                           font=('Roboto', 15))
     button_save.place(x=645, y=15)
-    button_close = customtkinter.CTkButton(frame2, text="Close", command=close, width=95, fg_color='#242424',
+    button_close = customtkinter.CTkButton(frame2, text="Delete", command=delete, width=95, fg_color='#242424',
                                           font=('Roboto', 15))
     button_close.place(x=540, y=15)
     with open(file_path, 'r') as file:
@@ -77,8 +78,6 @@ def open_file(filename):
 
 
 
-
-import os
 
 def save():
     file_name = entry_name.get()
@@ -102,7 +101,7 @@ def save():
         label_status.place(x=10, y=5)
         button_status = customtkinter.CTkButton(frame_supp, text='Save', font=('Roboto', 13), width=60, height=20,command=save_supp)
         button_status.place(x=150,y = 35)
-        button_status = customtkinter.CTkButton(frame_supp, text='Cancel',fg_color='#495057', font=('Roboto', 13), width=60, height=20,command=cancel_supp)
+        button_status = customtkinter.CTkButton(frame_supp, text='Delete',fg_color='#495057', font=('Roboto', 13), width=60, height=20,command=delete)
         button_status.place(x=85, y=35)
     else:
         '''frame_supp.destroy()
@@ -115,6 +114,21 @@ def save():
             file.write(text_content)
             print(f"File '{file_name}.txt' saved successfully.")
 
+
+def search_files():
+    query = entry_search.get()
+    for widget in scrollable_frame.winfo_children():
+        widget.destroy()
+
+    file_folder = "file"
+    for filename in os.listdir(file_folder):
+        if query.lower() in filename.lower():
+            frame_saves = customtkinter.CTkFrame(scrollable_frame, width=200, height=50)
+            frame_saves.pack(pady=5)
+            label_file = customtkinter.CTkLabel(frame_saves, text=filename, width=150, font=('Roboto', 12))
+            label_file.pack(side="left")
+            button_open = customtkinter.CTkButton(frame_saves, text="Open", command=lambda name=filename: open_file(name), width=50, font=('Roboto', 12))
+            button_open.pack(side="right")
 def save_supp():
 
 
@@ -142,33 +156,57 @@ def close():
     button_save.destroy()
     button_close.destroy()
 
+
+
 def delete():
-    pass
+    selected_file = entry_name.get()
+    folder_path = "file"
+    file_path = os.path.join(folder_path, f'{selected_file}.txt')
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print(f"File '{selected_file}.txt' deleted successfully.")
+        update_file_list()
+        entry_name.destroy()
+        textbox.destroy()
+        button_save.destroy()
+        button_close.destroy()
+    else:
+        print(f"File '{selected_file}.txt' does not exist.")
+
 
 def colorMode():
     pass
 
 '''Frame1'''
 
-frame1 = customtkinter.CTkFrame(master=root, width=250, height=720, bg_color='#242424')
+frame1 = customtkinter.CTkFrame(master=root, width=250, height=720)
 frame1.place(x=0,y=0)
 
 entry_search = customtkinter.CTkEntry(frame1,width=200, placeholder_text="Search..")
 entry_search.place(x=40,y=10)
+entry_search.bind('<KeyRelease>', lambda event: search_files())
 
-button_delete = customtkinter.CTkButton(frame1, text="Delete", command=delete, width=95, fg_color='#2b2b2b',hover_color="#495057", border_width=2,border_color='#343A40', font=('Roboto',15),)
-button_delete.place(x=40,y=670)
+button_create = customtkinter.CTkButton(frame1, text="Create", command=create, width=200, font=('Roboto',15))
+button_create.place(x=40,y=620)
 
-button_create = customtkinter.CTkButton(frame1, text="Create", command=create, width=95, font=('Roboto',15))
-button_create.place(x=145,y=670)
-
-scrollable_frame = customtkinter.CTkScrollableFrame(frame1, width=190, height=600,bg_color='#212121')
+scrollable_frame = customtkinter.CTkScrollableFrame(frame1, width=190, height=550,)
 scrollable_frame.place(x=40,y=44)
+
+def switch_event():
+    print("switch toggled, current value:",switch_var.get() )
+    customtkinter.set_appearance_mode(switch_var.get())
+
+switch_var = customtkinter.StringVar(value="on")
+switch = customtkinter.CTkSwitch(frame1, text="Switch Mode", command=switch_event,
+                                 variable=switch_var, onvalue="light", offvalue="dark")
+
+switch.place(x=40,y=670)
 
 
 update_file_list()
 '''Frame Bar'''
-frame_bar = customtkinter.CTkFrame(master=frame1, width=30, height=720, fg_color='#353535')
+frame_bar = customtkinter.CTkFrame(master=frame1, width=30, height=720)
 frame_bar.place(x=0,y=0)
 
 '''button_create = customtkinter.CTkButton(frame1, text="+", command=colorMode, width=30, font=('Roboto',30),fg_color='#353535')
@@ -176,7 +214,7 @@ button_create.place(x=0,y=670)'''
 
 '''#Frame2'''
 
-frame2 = customtkinter.CTkFrame(master=root, width=750, height=680, bg_color='#242424')
+frame2 = customtkinter.CTkFrame(master=root, width=750, height=680)
 frame2.place(x=300,y=22)
 
 
