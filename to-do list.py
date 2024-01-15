@@ -130,21 +130,23 @@ def search_files():
             button_open = customtkinter.CTkButton(frame_saves, text="Open", command=lambda name=filename: open_file(name), width=50, font=('Roboto', 12))
             button_open.pack(side="right")
 def save_supp():
+    try:
+        file_name = entry_name.get()
+        text_content = textbox.get("1.0", "end-1c")
+        folder_path = "file"
 
+        file_path = os.path.join(folder_path, f'{file_name}.txt')
 
-    file_name = entry_name.get()
-    text_content = textbox.get("1.0", "end-1c")
-    folder_path = "file"
+        with open(file_path, 'w') as file:
+            file.write(text_content)
+            print(f"File '{file_name}.txt' saved successfully.")
+        frame_supp.destroy()
+        label_supp.destroy()
+        label_status.destroy()
+        button_status.destroy()
+    except:
+        pass
 
-    file_path = os.path.join(folder_path, f'{file_name}.txt')
-
-    with open(file_path, 'w') as file:
-        file.write(text_content)
-        print(f"File '{file_name}.txt' saved successfully.")
-    frame_supp.destroy()
-    label_supp.destroy()
-    label_status.destroy()
-    button_status.destroy()
 def cancel_supp():
     frame_supp.destroy()
     label_supp.destroy()
@@ -175,8 +177,6 @@ def delete():
         print(f"File '{selected_file}.txt' does not exist.")
 
 
-def colorMode():
-    pass
 
 '''Frame1'''
 
@@ -197,9 +197,9 @@ def switch_event():
     print("switch toggled, current value:",switch_var.get() )
     customtkinter.set_appearance_mode(switch_var.get())
 
-switch_var = customtkinter.StringVar(value="on")
+switch_var = customtkinter.StringVar(value="off")
 switch = customtkinter.CTkSwitch(frame1, text="Switch Mode", command=switch_event,
-                                 variable=switch_var, onvalue="light", offvalue="dark")
+                                 variable=switch_var, onvalue="dark", offvalue="light")
 
 switch.place(x=40,y=670)
 
