@@ -1,6 +1,7 @@
 import customtkinter as tk
 from PIL import Image
 from datetime import datetime
+import subprocess
 
 
 tk.set_appearance_mode("Black")
@@ -17,18 +18,16 @@ time = now.strftime("%H:%M")
 real_password = "0000"
 
 
-'''def open_main():
-    import main_screen
-    main_screen.'''
-
 def check_password():
     if real_password == entry.get():
-        #open_main()
         root_start.destroy()
+        subprocess.run(["python", "main_screen.py"])
 
 
-'''
-image_path = "eea47f_solid_color_background_icolorpalette.png.webp"
+
+
+
+'''image_path = "dark orange.jpeg"
 image = tk.CTkImage(light_image=Image.open(image_path), size=(1920, 1080))
 image_label = tk.CTkLabel(root_start, image=image, text="")
 image_label.place(x=0, y=0)'''
