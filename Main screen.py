@@ -5,9 +5,9 @@ from datetime import datetime
 images = {"calculator": "calculator.svg.png",
           "to-do list": "to do list.png",
           "snake": "snake.png",
-          "browser": "browser.png",
           "weather": "weather.jpeg",
-          "calendar": "calendar.png"}
+          "calendar": "calendar.png",
+          "timer": "timer.png"}
 
 
 class Window(tk.CTk):
@@ -52,11 +52,11 @@ class Frame(tk.CTkFrame):
         tk.CTkLabel(self, text="Snake",
                     font=("Times New Roman", 15)).place(x=510, y=380)
 
-        #browser
+        # timer
         tk.CTkButton(self, width=50, height=50, text="",
-                     image=tk.CTkImage(light_image=Image.open(images.get("browser")),
+                     image=tk.CTkImage(light_image=Image.open(images.get("timer")),
                                        size=(40, 40))).place(x=700, y=330)
-        tk.CTkLabel(self, text="Browser",
+        tk.CTkLabel(self, text="  Timer",
                     font=("Times New Roman", 15)).place(x=702, y=380)
 
         #calendar
@@ -68,6 +68,16 @@ class Frame(tk.CTkFrame):
 
         self.place(x=0, y=0, relwidth=1, relheight=0.7)
 
+    def open_app(self, app):
+        subprocess.run(["python", app])
+
+    def update_time(self):
+        now = datetime.now()
+        date_label.configure(text=now.strftime("%A, %d %B"))
+        time_label.configure(text=now.strftime("%H:%M"))
+        root_start.after(1000, update_time)
+
 
 if __name__ == '__main__':
     Window()
+
